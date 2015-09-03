@@ -1,4 +1,4 @@
-simple-scala-rest-example
+slick tryout with spray
 =========================
 
-Example of REST Service with Scala using Spray, Slick and Akka.
+Trying out slick with akks / scala using spray for REST APIs
