@@ -8,10 +8,10 @@ import spray.can.Http
 
 object Boot extends App with Configuration {
 
-  // create an actor system for application
-  implicit val system = ActorSystem("rest-service-tryout")
+  // actor system
+  implicit val system = ActorSystem("scala-spray-tryout")
 
-  // create and start rest service actor
+  // rest service actor
   val restService = system.actorOf(Props[RestServiceActor], "rest-endpoint")
 
   // start HTTP server with rest service actor as a handler

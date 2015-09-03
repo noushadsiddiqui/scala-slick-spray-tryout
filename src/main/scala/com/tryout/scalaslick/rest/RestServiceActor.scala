@@ -8,14 +8,10 @@ import com.tryout.scalaslick.dao.CustomerDAO
 import com.tryout.scalaslick.domain.{Customer, Failure, CustomerSearchParameters}
 import net.liftweb.json.Serialization._
 import net.liftweb.json.{DateFormat, Formats}
-import scala.Some
 import spray.http._
 import spray.httpx.unmarshalling._
 import spray.routing._
 
-/**
- * REST Service actor.
- */
 class RestServiceActor extends Actor with RestService {
 
   implicit def actorRefFactory = context
@@ -23,9 +19,6 @@ class RestServiceActor extends Actor with RestService {
   def receive = runRoute(rest)
 }
 
-/**
- * REST Service
- */
 trait RestService extends HttpService with SLF4JLogging {
 
   val customerService = new CustomerDAO
@@ -78,17 +71,17 @@ trait RestService extends HttpService with SLF4JLogging {
           customer: Customer =>
             ctx: RequestContext =>
               handleRequest(ctx, StatusCodes.Created) {
-                log.debug("Creating customer: %s".format(customer))
+                log.info("Creating customer: %s".format(customer))
                 customerService.create(customer)
               }
         }
       } ~
         get {
-          parameters('firstName.as[String] ?, 'lastName.as[String] ?, 'birthday.as[Date] ?).as(CustomerSearchParameters) {
+          parameters('id.as[Long] ?, 'firstName.as[String] ?, 'lastName.as[String] ?, 'emailId.as[String] ?, 'birthday.as[Date] ?).as(CustomerSearchParameters) {
             searchParameters: CustomerSearchParameters => {
               ctx: RequestContext =>
                 handleRequest(ctx) {
-                  log.debug("Searching for customers with parameters: %s".format(searchParameters))
+                  log.info("get customer list, parameters: %s".format(searchParameters))
                   customerService.search(searchParameters)
                 }
             }
@@ -105,7 +98,7 @@ trait RestService extends HttpService with SLF4JLogging {
               customer: Customer =>
                 ctx: RequestContext =>
                   handleRequest(ctx) {
-                    log.debug("Updating customer with id %d: %s".format(customerId, customer))
+                    log.info("Updating customer, id %d: %s".format(customerId, customer))
                     customerService.update(customerId, customer)
                   }
             }
@@ -113,14 +106,14 @@ trait RestService extends HttpService with SLF4JLogging {
             delete {
               ctx: RequestContext =>
                 handleRequest(ctx) {
-                  log.debug("Deleting customer with id %d".format(customerId))
+                  log.info("Deleting customer, id %d".format(customerId))
                   customerService.delete(customerId)
                 }
             } ~
             get {
               ctx: RequestContext =>
                 handleRequest(ctx) {
-                  log.debug("Retrieving customer with id %d".format(customerId))
+                  log.info("Retrieving customer, id %d".format(customerId))
                   customerService.get(customerId)
                 }
             }

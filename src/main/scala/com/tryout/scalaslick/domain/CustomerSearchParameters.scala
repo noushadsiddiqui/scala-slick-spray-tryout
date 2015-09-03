@@ -4,11 +4,14 @@ import java.util.Date
 
 /**
  * Customers search parameters.
- *
+ * @param id        db id
  * @param firstName first name
  * @param lastName  last name
- * @param birthday  date of birth
+ * @param emailId   email Id
+ * @param birthday  dob
  */
-case class CustomerSearchParameters(firstName: Option[String] = None,
+case class CustomerSearchParameters(id :  Option[Long] = None,
+                                    firstName: Option[String] = None,
                                     lastName: Option[String] = None,
+                                    emailId: Option[String] = None,
                                     birthday: Option[Date] = None)

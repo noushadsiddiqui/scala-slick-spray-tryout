@@ -3,6 +3,7 @@ package com.tryout.scalaslick.dao
 import java.sql._
 import com.tryout.scalaslick.config.Configuration
 import com.tryout.scalaslick.domain._
+import akka.event.slf4j.SLF4JLogging
 
 import scala.Some
 import scala.slick.driver.MySQLDriver.simple.Database.threadLocalSession
@@ -12,7 +13,7 @@ import slick.jdbc.meta.MTable
 /**
  * Provides DAL for Customer entities for MySQL database.
  */
-class CustomerDAO extends Configuration {
+class CustomerDAO extends Configuration with SLF4JLogging {
 
   // init Database instance
   private val db = Database.forURL(url = "jdbc:mysql://%s:%d/%s".format(dbHost, dbPort, dbName),
@@ -74,11 +75,13 @@ class CustomerDAO extends Configuration {
     try {
       db.withTransaction {
         val query = Customers.where(_.id === id)
+        log.info("query is %d".format(query))
         val customers = query.run.asInstanceOf[List[Customer]]
         customers.size match {
           case 0 =>
             Left(notFoundError(id))
           case _ => {
+            log.info("count is %s".format(customers.size))
             query.delete
             Right(customers.head)
           }
@@ -126,8 +129,10 @@ class CustomerDAO extends Configuration {
         val query = for {
           customer <- Customers if {
           Seq(
+            params.id.map(customer.id is _),
             params.firstName.map(customer.firstName is _),
             params.lastName.map(customer.lastName is _),
+            params.emailId.map(customer.emailId is _),
             params.birthday.map(customer.birthday is _)
           ).flatten match {
             case Nil => ConstColumn.TRUE
@@ -160,5 +165,5 @@ class CustomerDAO extends Configuration {
    * @return not found error description
    */
   protected def notFoundError(customerId: Long) =
-    Failure("Customer with id=%d does not exist".format(customerId), FailureType.NotFound)
+    Failure("Customer not found : id=%d ".format(customerId), FailureType.NotFound)
 }

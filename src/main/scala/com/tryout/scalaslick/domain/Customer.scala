@@ -21,15 +21,16 @@ object Customers extends Table[Customer]("customers") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def firstName = column[String]("first_name")
+  def firstName = column[String]("first_name", O.DBType("VARCHAR(50)"))
 
-  def lastName = column[String]("last_name", O.Nullable)
+  def lastName = column[String]("last_name", O.Nullable, O.DBType("VARCHAR(50)"))
 
-  def emailId = column[String]("email_id")
+  def emailId = column[String]("email_id", O.DBType("VARCHAR(50)"))
 
   def birthday = column[java.util.Date]("dob", O.Nullable)
 
-  def deleted = column[Boolean]()
+  // TODO : default value is not working
+  def deleted = column[Boolean]("deleted", O.Default(false))
 
   // FK Example, user_FK : FK name, owner : column name here, Users : users table mapping
   // def withuser = foreignKey("User_FK", owner, Users)(_.id)
