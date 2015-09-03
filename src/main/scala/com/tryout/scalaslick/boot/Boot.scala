@@ -12,7 +12,7 @@ object Boot extends App with Configuration {
   implicit val system = ActorSystem("scala-spray-tryout")
 
   // rest service actor
-  val restService = system.actorOf(Props[RestServiceActor], "rest-endpoint")
+  val restService = system.actorOf(Props[RestServiceActor], "restservice")
 
   // start HTTP server with rest service actor as a handler
   IO(Http) ! Http.Bind(restService, serviceHost, servicePort)
