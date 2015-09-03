@@ -10,9 +10,6 @@ import scala.slick.driver.MySQLDriver.simple.Database.threadLocalSession
 import scala.slick.driver.MySQLDriver.simple._
 import slick.jdbc.meta.MTable
 
-/**
- * Provides DAL for Customer entities for MySQL database.
- */
 class CustomerDAO extends Configuration with SLF4JLogging {
 
   // init Database instance
@@ -81,9 +78,9 @@ class CustomerDAO extends Configuration with SLF4JLogging {
           case 0 =>
             Left(notFoundError(id))
           case _ => {
-            log.info("count is %s".format(customers.size))
+            log.info("got data, count is %s".format(customers.size))
             query.delete
-            Right(customers.head)
+            Right(customers.head)s
           }
         }
       }
